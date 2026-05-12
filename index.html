@@ -1,1 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- ============================================================
+       PAGE TITLE
+       This appears in the browser tab and in some search previews.
+       ============================================================ -->
+  <title>Andrew Kerfoot | Portfolio</title>
+
+  <!-- ============================================================
+       BASIC SEO / LINK PREVIEW INFO
+       You can edit these later if you want.
+       ============================================================ -->
+  <meta name="description" content="Portfolio for Andrew Kerfoot: ecoinformatics, ecological modeling, environmental data science, and research projects." />
+
+  <style>
+    /* ============================================================
+       GLOBAL STYLE SETTINGS
+       You can change the colors here if you want a different look.
+       ============================================================ */
+    :root {
+      --bg: #f7f7f4;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #5f6c7b;
+      --accent: #2f6f5e;
+      --accent-dark: #245548;
+      --border: #e1e4e8;
+      --shadow: 0 10px 25px rgba(31, 41, 51, 0.08);
+      --radius: 18px;
+      --max-width: 1050px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      color: var(--accent-dark);
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* ============================================================
+       TOP NAVIGATION
+       ============================================================ */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(247, 247, 244, 0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 0;
+      gap: 1rem;
+    }
+
+    .nav-name {
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.9rem;
+      font-size: 0.95rem;
+    }
+
+    /* ============================================================
+       HERO SECTION
+       ============================================================ */
+    .hero {
+      padding: 5rem 0 3.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 0.9fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(2.3rem, 5vw, 4.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.06em;
+      margin: 0 0 1rem;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 0 1.5rem;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(31, 41, 51, 0.04);
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+
+    .profile-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.35rem;
+      box-shadow: var(--shadow);
+    }
+
+    .profile-card img {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .profile-card p {
+      margin: 0.25rem 0;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .profile-card strong {
+      color: var(--text);
+    }
+
+    /* ============================================================
+       SECTIONS
+       ============================================================ */
+    section {
+      padding: 3rem 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    h2 {
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      margin: 0;
+      letter-spacing: -0.04em;
+    }
+
+    .section-note {
+      color: var(--muted);
+      max-width: 650px;
+      margin: 0.5rem 0 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem;
+      box-shadow: 0 6px 18px rgba(31, 41, 51, 0.05);
+    }
+
+    .card h3 {
+      margin: 0 0 0.4rem;
+      font-size: 1.1rem;
+      line-height: 1.25;
+    }
+
+    .card p {
+      color: var(--muted);
+      margin: 0.5rem 0;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 0.85rem 0;
+    }
+
+    .tag {
+      display: inline-block;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.22rem 0.55rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: #fafafa;
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.9rem;
+      font-size: 0.95rem;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin: 0.6rem 0 0;
+      color: var(--muted);
+    }
+
+    li {
+      margin-bottom: 0.3rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* ============================================================
+       MOBILE RESPONSIVE LAYOUT
+       ============================================================ */
+    @media (max-width: 850px) {
+      .hero-grid,
+      .grid,
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 3.5rem;
+      }
+
+      nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============================================================
+       NAVIGATION
+       Edit link names if you change section names.
+       ============================================================ -->
+  <header>
+    <div class="container">
+      <nav>
+        <a class="nav-name" href="#top">Andrew Kerfoot</a>
+        <div class="nav-links">
+          <a href="#projects">Projects</a>
+          <a href="#writing">Posters & Writing</a>
+          <a href="#skills">Skills</a>
+          <a href="#contact">Contact</a>
+          <!-- Replace this with your actual resume PDF filename after you add it to /assets -->
+          <a href="assets/resume.pdf">Resume</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ============================================================
+         HERO / INTRO
+         Fill this in with your strongest 2-3 sentence summary.
+         ============================================================ -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Ecoinformatics · Ecological Modeling · Environmental Data</div>
+          <h1>Hi, I’m Andrew Kerfoot.</h1>
+
+          <!-- EDIT THIS PARAGRAPH -->
+          <p>
+            I am an Informatics student with an emphasis in Ecoinformatics at Northern Arizona University.
+            My work focuses on ecological modeling, disease dynamics, environmental data, and reproducible computational workflows.
+          </p>
+
+          <!-- EDIT THESE LINKS -->
+          <div class="button-row">
+            <a class="button primary" href="#projects">View Projects</a>
+            <a class="button" href="assets/resume.pdf">Resume</a>
+            <a class="button" href="https://github.com/adk254" target="_blank" rel="noopener">GitHub</a>
+            <a class="button" href="https://www.linkedin.com/in/andrewkerfoot/" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+
+        <!-- ========================================================
+             PROFILE CARD
+             Optional: add your own image as assets/profile.jpg.
+             If you do not want a photo, delete the <img> line.
+             ======================================================== -->
+        <aside class="profile-card">
+          <!-- Replace assets/profile.jpg with your own image file, or delete this image line. -->
+          <img src="assets/profile.jpg" alt="Photo or project image for Andrew Kerfoot" />
+
+          <p><strong>Current focus:</strong> Environmental data science and ecological modeling</p>
+          <p><strong>Degree:</strong> Informatics B.S., Ecoinformatics emphasis</p>
+          <p><strong>Institution:</strong> Northern Arizona University</p>
+          <p><strong>Interests:</strong> Python, R, forecasting, disease ecology, climate data</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PROJECTS
+         Each project card has:
+         - title
+         - short employer-friendly description
+         - tools/tags
+         - links to GitHub, poster, paper, or demo
+         Add/remove cards as needed.
+         ============================================================ -->
+    <section id="projects">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <h2>Featured Projects</h2>
+            <p class="section-note">
+              Selected projects showing research, coding, modeling, data analysis, and scientific communication.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <!-- PROJECT 1 -->
+          <article class="card">
+            <h3>Tiger Salamander Disease Modeling</h3>
+            <p>
+              Modeled climate-driven disease dynamics in Arizona tiger salamanders using a spatial, multi-pond simulation framework.
+              The project integrates temperature, movement, host life stage, and infection dynamics.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Python</span>
+              <span class="tag">epymorph</span>
+              <span class="tag">Disease ecology</span>
+              <span class="tag">Climate data</span>
+            </div>
+            <div class="link-row">
+              <a href="https://github.com/adk254/HURA_25-26" target="_blank" rel="noopener">GitHub</a>
+              <!-- Add this PDF to assets/ or update filename -->
+              <a href="assets/hura-poster.pdf">Poster PDF</a>
+              <!-- Optional: add a project writeup -->
+              <a href="assets/salamander-project-summary.pdf">Project Summary</a>
+            </div>
+          </article>
+
+          <!-- PROJECT 2 -->
+          <article class="card">
+            <h3>ILI Forecasting with STL + ETS</h3>
+            <p>
+              Built and evaluated probabilistic forecasts for influenza-like illness using time-series models,
+              quantile forecasts, validation periods, and weighted interval score comparisons.
+            </p>
+            <div class="tag-row">
+              <span class="tag">R</span>
+              <span class="tag">fpp3</span>
+              <span class="tag">Forecasting</span>
+              <span class="tag">hubverse</span>
+            </div>
+            <div class="link-row">
+              <!-- Replace with your repo if public -->
+              <a href="https://github.com/adk254" target="_blank" rel="noopener">GitHub</a>
+              <a href="assets/forecasting-report.pdf">Report PDF</a>
+            </div>
+          </article>
+
+          <!-- PROJECT 3 -->
+          <article class="card">
+            <h3>Environmental Data Analysis Project</h3>
+            <p>
+              Analyzed relationships between climate variables and environmental outcomes using statistical modeling,
+              data visualization, and careful interpretation of observational data.
+            </p>
+            <div class="tag-row">
+              <span class="tag">R</span>
+              <span class="tag">Regression</span>
+              <span class="tag">Data visualization</span>
+              <span class="tag">Environmental science</span>
+            </div>
+            <div class="link-row">
+              <!-- Replace these with actual files/links -->
+              <a href="assets/environmental-data-report.pdf">Report PDF</a>
+              <a href="https://github.com/adk254" target="_blank" rel="noopener">GitHub</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         POSTERS AND WRITING
+         Good place for PDFs that show communication skills.
+         Add files to /assets and update the href filenames.
+         ============================================================ -->
+    <section id="writing">
+      <div class="container">
+        <h2>Posters & Writing</h2>
+        <p class="section-note">
+          Research posters, reports, and selected writing samples.
+        </p>
+
+        <div class="two-column" style="margin-top: 1rem;">
+          <article class="card">
+            <h3>Research Posters</h3>
+            <ul>
+              <li><a href="assets/hura-poster.pdf">HURA / OURCA Research Poster</a></li>
+              <li><a href="assets/undergraduate-symposium-poster.pdf">Undergraduate Symposium Poster</a></li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Reports & Writing Samples</h3>
+            <ul>
+              <li><a href="assets/forecasting-report.pdf">ILI Forecasting Report</a></li>
+              <li><a href="assets/environmental-data-report.pdf">Environmental Data Analysis Report</a></li>
+              <li><a href="assets/writing-sample.pdf">Selected Writing Sample</a></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SKILLS
+         Update these as your resume changes.
+         ============================================================ -->
+    <section id="skills">
+      <div class="container">
+        <h2>Skills</h2>
+        <p class="section-note">
+          Tools and methods I have used in coursework, research, and independent projects.
+        </p>
+
+        <div class="grid" style="margin-top: 1rem;">
+          <article class="card">
+            <h3>Programming & Data</h3>
+            <ul>
+              <li>Python, R, SQL</li>
+              <li>pandas, NumPy, tidyverse</li>
+              <li>Git, GitHub, reproducible workflows</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Modeling & Analysis</h3>
+            <ul>
+              <li>Ecological simulation modeling</li>
+              <li>Time-series forecasting</li>
+              <li>Regression and statistical analysis</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Scientific Communication</h3>
+            <ul>
+              <li>Research posters and presentations</li>
+              <li>Technical reports</li>
+              <li>Quarto, R Markdown, Jupyter</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CONTACT
+         Fill in your preferred email.
+         ============================================================ -->
+    <section id="contact">
+      <div class="container">
+        <div class="card">
+          <h2>Contact</h2>
+          <p>
+            I am interested in opportunities involving environmental data, ecological modeling,
+            research support, data analysis, and scientific computing.
+          </p>
+
+          <!-- EDIT EMAIL -->
+          <p>
+            Email: <a href="mailto:your.email@example.com">your.email@example.com</a><br />
+            GitHub: <a href="https://github.com/adk254" target="_blank" rel="noopener">github.com/adk254</a><br />
+            LinkedIn: <a href="https://www.linkedin.com/in/andrewkerfoot/" target="_blank" rel="noopener">linkedin.com/in/andrewkerfoot</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <!-- You can remove or edit this. -->
+      <p>© 2026 Andrew Kerfoot. Built with GitHub Pages.</p>
+    </div>
+  </footer>
+</body>
+</html>
