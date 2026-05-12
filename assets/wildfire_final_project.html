@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Andrew Kerfoot">
+<meta name="dcterms.date" content="2026-04-29">
+
+<title>Predicting Wildfire Frequency and Severity from Temperature and Precipitation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="wildfire_final_project_files/libs/clipboard/clipboard.min.js"></script>
+<script src="wildfire_final_project_files/libs/quarto-html/quarto.js"></script>
+<script src="wildfire_final_project_files/libs/quarto-html/popper.min.js"></script>
+<script src="wildfire_final_project_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="wildfire_final_project_files/libs/quarto-html/anchor.min.js"></script>
+<link href="wildfire_final_project_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="wildfire_final_project_files/libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="wildfire_final_project_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="wildfire_final_project_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="wildfire_final_project_files/libs/bootstrap/bootstrap-8a79a254b8e706d3c925cde0a310d4f0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#data-collection" id="toc-data-collection" class="nav-link" data-scroll-target="#data-collection"><span class="header-section-number">2</span> Data Collection</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables"><span class="header-section-number">3</span> Variables</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis"><span class="header-section-number">4</span> Exploratory Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#summary-statistics" id="toc-summary-statistics" class="nav-link" data-scroll-target="#summary-statistics"><span class="header-section-number">4.1</span> Summary Statistics</a></li>
+  <li><a href="#graphical-summaries" id="toc-graphical-summaries" class="nav-link" data-scroll-target="#graphical-summaries"><span class="header-section-number">4.2</span> Graphical Summaries</a></li>
+  </ul></li>
+  <li><a href="#statistical-methods" id="toc-statistical-methods" class="nav-link" data-scroll-target="#statistical-methods"><span class="header-section-number">5</span> Statistical Methods</a></li>
+  <li><a href="#primary-regression-analysis-wildfire-severity" id="toc-primary-regression-analysis-wildfire-severity" class="nav-link" data-scroll-target="#primary-regression-analysis-wildfire-severity"><span class="header-section-number">6</span> Primary Regression Analysis: Wildfire Severity</a>
+  <ul class="collapse">
+  <li><a href="#interpretation-of-the-acres-burned-model" id="toc-interpretation-of-the-acres-burned-model" class="nav-link" data-scroll-target="#interpretation-of-the-acres-burned-model"><span class="header-section-number">6.1</span> Interpretation of the Acres Burned Model</a></li>
+  <li><a href="#multicollinearity-check-for-acres-burned-model" id="toc-multicollinearity-check-for-acres-burned-model" class="nav-link" data-scroll-target="#multicollinearity-check-for-acres-burned-model"><span class="header-section-number">6.2</span> Multicollinearity Check for Acres Burned Model</a></li>
+  <li><a href="#diagnostic-plots-for-acres-burned-model" id="toc-diagnostic-plots-for-acres-burned-model" class="nav-link" data-scroll-target="#diagnostic-plots-for-acres-burned-model"><span class="header-section-number">6.3</span> Diagnostic Plots for Acres Burned Model</a></li>
+  <li><a href="#diagnostic-interpretation-for-acres-burned-model" id="toc-diagnostic-interpretation-for-acres-burned-model" class="nav-link" data-scroll-target="#diagnostic-interpretation-for-acres-burned-model"><span class="header-section-number">6.4</span> Diagnostic Interpretation for Acres Burned Model</a></li>
+  </ul></li>
+  <li><a href="#secondary-regression-analysis-wildfire-frequency" id="toc-secondary-regression-analysis-wildfire-frequency" class="nav-link" data-scroll-target="#secondary-regression-analysis-wildfire-frequency"><span class="header-section-number">7</span> Secondary Regression Analysis: Wildfire Frequency</a>
+  <ul class="collapse">
+  <li><a href="#interpretation-of-the-wildfire-count-model" id="toc-interpretation-of-the-wildfire-count-model" class="nav-link" data-scroll-target="#interpretation-of-the-wildfire-count-model"><span class="header-section-number">7.1</span> Interpretation of the Wildfire Count Model</a></li>
+  <li><a href="#multicollinearity-check-for-wildfire-count-model" id="toc-multicollinearity-check-for-wildfire-count-model" class="nav-link" data-scroll-target="#multicollinearity-check-for-wildfire-count-model"><span class="header-section-number">7.2</span> Multicollinearity Check for Wildfire Count Model</a></li>
+  <li><a href="#diagnostic-plots-for-wildfire-count-model" id="toc-diagnostic-plots-for-wildfire-count-model" class="nav-link" data-scroll-target="#diagnostic-plots-for-wildfire-count-model"><span class="header-section-number">7.3</span> Diagnostic Plots for Wildfire Count Model</a></li>
+  <li><a href="#diagnostic-interpretation-for-wildfire-count-model" id="toc-diagnostic-interpretation-for-wildfire-count-model" class="nav-link" data-scroll-target="#diagnostic-interpretation-for-wildfire-count-model"><span class="header-section-number">7.4</span> Diagnostic Interpretation for Wildfire Count Model</a></li>
+  </ul></li>
+  <li><a href="#comparison-of-the-two-models" id="toc-comparison-of-the-two-models" class="nav-link" data-scroll-target="#comparison-of-the-two-models"><span class="header-section-number">8</span> Comparison of the Two Models</a></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion"><span class="header-section-number">9</span> Results and Discussion</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">10</span> Limitations</a></li>
+  <li><a href="#surprises-encountered" id="toc-surprises-encountered" class="nav-link" data-scroll-target="#surprises-encountered"><span class="header-section-number">11</span> Surprises Encountered</a></li>
+  <li><a href="#what-i-would-do-differently" id="toc-what-i-would-do-differently" class="nav-link" data-scroll-target="#what-i-would-do-differently"><span class="header-section-number">12</span> What I Would Do Differently</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">13</span> Conclusion</a></li>
+  <li><a href="#appendix-full-r-code" id="toc-appendix-full-r-code" class="nav-link" data-scroll-target="#appendix-full-r-code"><span class="header-section-number">14</span> Appendix: Full R Code</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="wildfire_final_project.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Predicting Wildfire Frequency and Severity from Temperature and Precipitation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Andrew Kerfoot </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 29, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>Wildfires are an increasingly important environmental issue in the United States, especially in western and southwestern states where fire risk is closely connected to climate, vegetation, drought, land management, and human activity. I chose this project because it connects statistics with conservation and environmental science, which are areas that I am interested in studying more closely.</p>
+<p>The original motivation for this project was to examine whether annual average temperature and annual precipitation can help explain differences in wildfire activity across selected U.S. states. After collecting the data, I decided to define wildfire activity in two related but distinct ways. The first is <strong>wildfire severity</strong>, measured by annual acres burned. The second is <strong>wildfire frequency</strong>, measured by annual number of fires.</p>
+<p>This distinction is important because a state can have many small fires without burning many acres, or it can have a smaller number of fires that burn a very large area. For that reason, this report uses two separate regression models: one for acres burned and one for wildfire counts.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_image.jpg" class="img-fluid figure-img" style="width:85.0%"></p>
+<figcaption>Image of wildfire burning forest</figcaption>
+</figure>
+</div>
+<p>The primary research question is:</p>
+<blockquote class="blockquote">
+<p>Can annual average temperature and annual precipitation be used to predict annual wildfire severity, measured by acres burned?</p>
+</blockquote>
+<p>The secondary research question is:</p>
+<blockquote class="blockquote">
+<p>Can the same climate variables be used to predict annual wildfire frequency, measured by number of fires?</p>
+</blockquote>
+</section>
+<section id="data-collection" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Data Collection</h1>
+<p>The data set used in this project contains annual climate and wildfire information for 10 U.S. states over a five-year period from 2020 through 2024. The selected states were Arizona, California, Colorado, Idaho, Montana, Nevada, New Mexico, Oregon, Texas, and Washington.</p>
+<p>Temperature and precipitation data were obtained from NOAA’s Climate at a Glance tool. For each state, I downloaded annual average temperature and annual precipitation values. Wildfire data were obtained from annual wildfire statistics tables that reported the number of fires and acres burned by state and year. The original files were then combined into one data set for analysis in R.</p>
+<p>This is an observational study because no treatments were assigned and no variables were controlled experimentally. Instead, the study uses existing state-level climate and wildfire data. Because the data were not collected through a randomized experiment, the results should be interpreted as associations rather than proof that temperature or precipitation directly caused changes in wildfire activity.</p>
+<p>The 10 states were selected purposefully rather than randomly. I chose western and southwestern states where wildfire activity is common and where temperature and precipitation were expected to be relevant to fire patterns. This means the sample should not be treated as a random sample of all U.S. states.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="states_map.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption>States examined in this study</figcaption>
+</figure>
+</div>
+</section>
+<section id="variables" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Variables</h1>
+<p>The variables used in the analysis were:</p>
+<ul>
+<li><strong>State:</strong> U.S. state included in the data set.</li>
+<li><strong>Year:</strong> Year of observation, from 2020 to 2024.</li>
+<li><strong>Temp:</strong> Annual average temperature in degrees Fahrenheit.</li>
+<li><strong>Precip:</strong> Annual precipitation in inches.</li>
+<li><strong>Fires:</strong> Annual number of wildfires.</li>
+<li><strong>AcresBurned:</strong> Annual number of acres burned by wildfires.</li>
+<li><strong>LogFires:</strong> Natural log of annual number of wildfires.</li>
+<li><strong>LogAcresBurned:</strong> Natural log of annual acres burned.</li>
+</ul>
+<p>The two response variables are <strong>AcresBurned</strong> and <strong>Fires</strong>. Since both response variables are right-skewed, I also considered their natural-log transformations. A “+1” adjustment was not used because the minimum wildfire count and minimum acres burned were both greater than zero, so the natural log was defined for every observation.</p>
+</section>
+<section id="exploratory-data-analysis" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Exploratory Data Analysis</h1>
+<p>The final data set contains 50 observations.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>       State Year Temp Precip Fires AcresBurned
+1    Arizona 2020 62.6   6.56  2524      978568
+2 California 2020 60.5  12.07 10431     4092151
+3   Colorado 2020 47.3  12.23  1080      625357
+4      Idaho 2020 44.3  22.19   944      314352
+5    Montana 2020 43.3  16.89  2433      369633
+6     Nevada 2020 52.4   5.86   770      259275</code></pre>
+</div>
+</div>
+<section id="summary-statistics" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="summary-statistics"><span class="header-section-number">4.1</span> Summary Statistics</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>      Temp           Precip          Fires          AcresBurned     
+ Min.   :42.10   Min.   : 5.86   Min.   :  375.0   Min.   :   1300  
+ 1st Qu.:47.15   1st Qu.:12.40   1st Qu.:  962.2   1st Qu.: 123885  
+ Median :49.55   Median :18.67   Median : 1740.0   Median : 279291  
+ Mean   :52.79   Mean   :20.51   Mean   : 2762.3   Mean   : 520830  
+ 3rd Qu.:60.33   3rd Qu.:27.08   3rd Qu.: 2405.5   3rd Qu.: 673616  
+ Max.   :68.60   Max.   :45.25   Max.   :12571.0   Max.   :4092151  </code></pre>
+</div>
+</div>
+<p>The summary statistics show that wildfire activity varied greatly across state-years. Annual wildfire counts ranged from 375 to 12,571 fires, while acres burned ranged from 1,300 to 4,092,151 acres. This wide range suggests that a small number of large wildfire seasons may have a strong influence on the analysis.</p>
+</section>
+<section id="graphical-summaries" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="graphical-summaries"><span class="header-section-number">4.2</span> Graphical Summaries</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/acres-histogram-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Distribution of annual acres burned.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/fires-histogram-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Distribution of annual wildfire counts.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Both response variables are right-skewed. This is especially clear for acres burned, where a few state-years had far more acres burned than most others. Because multiple regression assumes approximately normal residuals and constant variance, this skewness motivates trying log-transformed response variables.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/log-acres-histogram-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Distribution of the log-transformed acres burned response.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/log-fires-histogram-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Distribution of the log-transformed wildfire counts.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/acres-temp-scatter-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Acres burned compared with annual average temperature.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/acres-precip-scatter-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Acres burned compared with annual precipitation.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/fires-temp-scatter-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Annual wildfire counts compared with annual average temperature.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/fires-precip-scatter-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Annual wildfire counts compared with annual precipitation.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Temp Precip Fires AcresBurned LogFires LogAcresBurned
+Temp            1.000 -0.179 0.622       0.217    0.565          0.204
+Precip         -0.179  1.000 0.116       0.094    0.274          0.265
+Fires           0.622  0.116 1.000       0.527    0.923          0.457
+AcresBurned     0.217  0.094 0.527       1.000    0.510          0.718
+LogFires        0.565  0.274 0.923       0.510    1.000          0.600
+LogAcresBurned  0.204  0.265 0.457       0.718    0.600          1.000</code></pre>
+</div>
+</div>
+<p>Temperature shows a stronger correlation with log wildfire counts (r = 0.565) than with log acres burned (r = 0.204), suggesting that climate variables may be better predictors of wildfire frequency than severity.</p>
+</section>
+</section>
+<section id="statistical-methods" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Statistical Methods</h1>
+<p>The main statistical method used in this project is multiple linear regression. Because I considered two different response variables, I fit two separate regression models rather than trying to put both responses in one model.</p>
+<p>Before using the log-transformed response variables, I first examined the raw response variables and fit untransformed regression models. The histograms and diagnostic plots suggested that both wildfire counts and acres burned were right-skewed, with a few unusually large fire seasons. For that reason, I used natural-log transformations for the main regression models. This transformation made the response variables more symmetric and helped the regression conditions become more reasonable.</p>
+<p>The primary model for wildfire severity is:</p>
+<p><span class="math display">\[
+\log(AcresBurned) = \beta_0 + \beta_1(Temp) + \beta_2(Precip) + \epsilon
+\]</span></p>
+<p>The secondary model for wildfire frequency is:</p>
+<p><span class="math display">\[
+\log(Fires) = \beta_0 + \beta_1(Temp) + \beta_2(Precip) + \epsilon
+\]</span></p>
+<p>For each explanatory variable in each model, the hypotheses are:</p>
+<p><span class="math display">\[
+H_0: \beta_i = 0
+\]</span></p>
+<p><span class="math display">\[
+H_A: \beta_i \ne 0
+\]</span></p>
+<p>The overall model is tested using the F-test from the regression output. This tests whether the model with temperature and precipitation explains significantly more variation in the response variable than a model with no explanatory variables.</p>
+<p>Because both models use a log-transformed response, coefficients are interpreted approximately as percent changes. More exactly, for a one-unit increase in a predictor, the estimated percent change in the response is:</p>
+<p><span class="math display">\[
+100(e^{\hat{\beta}} - 1)
+\]</span></p>
+</section>
+<section id="primary-regression-analysis-wildfire-severity" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Primary Regression Analysis: Wildfire Severity</h1>
+<p>The primary response variable is the natural log of acres burned. I used this transformed response because the raw acres-burned variable was strongly right-skewed, with a few very large fire seasons.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>log_acres_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(LogAcresBurned <span class="sc">~</span> Temp <span class="sc">+</span> Precip, <span class="at">data =</span> wildfire)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(log_acres_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = LogAcresBurned ~ Temp + Precip, data = wildfire)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.8835 -0.8538  0.0577  0.8255  2.7316 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  9.31172    1.37257   6.784 1.74e-08 ***
+Temp         0.04448    0.02360   1.885   0.0657 .  
+Precip       0.04063    0.01797   2.261   0.0284 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.257 on 47 degrees of freedom
+Multiple R-squared:  0.1356,    Adjusted R-squared:  0.09886 
+F-statistic: 3.688 on 2 and 47 DF,  p-value: 0.03253</code></pre>
+</div>
+</div>
+<section id="interpretation-of-the-acres-burned-model" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="interpretation-of-the-acres-burned-model"><span class="header-section-number">6.1</span> Interpretation of the Acres Burned Model</h2>
+<p>For the log acres burned model, the estimated regression equation is:</p>
+<p><span class="math display">\[
+\widehat{\log(AcresBurned)} =
+9.312 + 0.044(Temp) + 0.041(Precip)
+\]</span></p>
+<p>The model has an <span class="math inline">\(R^2\)</span> of 0.136 and an adjusted <span class="math inline">\(R^2\)</span> of 0.099. This means that temperature and precipitation together explain about 13.6% of the variation in log acres burned.</p>
+<p>The overall F-test has a p-value of 0.0325. At the 0.05 significance level, this indicates that the model with temperature and precipitation explains a statistically significant amount of variation in log acres burned.</p>
+<p>The estimated temperature coefficient is 0.0445. Interpreted on the original acres-burned scale, this means that, holding precipitation constant, a one-degree Fahrenheit increase in annual average temperature is associated with an estimated 4.5% increase in acres burned, on average. However, the temperature coefficient was not statistically significant at the 0.05 level because its p-value was 0.0657 and its confidence interval included 0.</p>
+<p>The estimated precipitation coefficient is 0.0406. Interpreted on the original acres-burned scale, this means that, holding temperature constant, a one-inch increase in annual precipitation is associated with an estimated 4.1% increase in acres burned, on average. This coefficient was statistically significant at the 0.05 level.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(log_acres_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   2.5 %     97.5 %
+(Intercept)  6.550464435 12.0729723
+Temp        -0.003002517  0.0919564
+Precip       0.004482063  0.0767766</code></pre>
+</div>
+</div>
+</section>
+<section id="multicollinearity-check-for-acres-burned-model" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="multicollinearity-check-for-acres-burned-model"><span class="header-section-number">6.2</span> Multicollinearity Check for Acres Burned Model</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(log_acres_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Temp   Precip 
+1.033086 1.033086 </code></pre>
+</div>
+</div>
+<p>The variance inflation factor values help determine whether temperature and precipitation are too strongly related to each other. The VIF values were both about 1.03, which suggests little concern about multicollinearity.</p>
+</section>
+<section id="diagnostic-plots-for-acres-burned-model" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="diagnostic-plots-for-acres-burned-model"><span class="header-section-number">6.3</span> Diagnostic Plots for Acres Burned Model</h2>
+<p>The assumptions for multiple linear regression include:</p>
+<ol type="1">
+<li>The relationship between predictors and response is approximately linear.</li>
+<li>The residuals have approximately constant variance.</li>
+<li>The residuals are approximately normally distributed.</li>
+<li>The observations are reasonably independent.</li>
+<li>There are no extreme influential points that dominate the model.</li>
+</ol>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/log-acres-diagnostics-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Diagnostic plots for the log-transformed acres burned model.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="diagnostic-interpretation-for-acres-burned-model" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="diagnostic-interpretation-for-acres-burned-model"><span class="header-section-number">6.4</span> Diagnostic Interpretation for Acres Burned Model</h2>
+<p>The diagnostic plots for the log acres burned model suggest that the model is usable, but not perfect. The residuals vs fitted plot does not show a strong curved pattern, so the linearity condition appears reasonably met after the log transformation. The scale-location plot also suggests that the spread of residuals is fairly consistent across the fitted values, although there is still some unevenness.</p>
+<p>The Q-Q plot shows some departure from normality, especially in the lower tail. This suggests that a few state-years had much lower acres burned than the model predicted. Because of this, conclusions from the acres burned model should be interpreted with some caution. The model provides evidence of an association between climate variables and acres burned, but the residual pattern suggests that acres burned is still not fully captured by a simple linear model using only temperature and precipitation.</p>
+<p>The residuals vs leverage plot also identifies a few observations that may have some influence on the model, especially observation 36. However, no single point appears to dominate the model. Overall, the log transformation improved the usefulness of the acres burned model, but the diagnostic plots still show that wildfire severity is difficult to explain using only annual temperature and precipitation.</p>
+</section>
+</section>
+<section id="secondary-regression-analysis-wildfire-frequency" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Secondary Regression Analysis: Wildfire Frequency</h1>
+<p>The secondary response variable is the natural log of annual wildfire counts. This model addresses whether temperature and precipitation help explain wildfire frequency rather than wildfire severity.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>log_fires_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(LogFires <span class="sc">~</span> Temp <span class="sc">+</span> Precip, <span class="at">data =</span> wildfire)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(log_fires_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = LogFires ~ Temp + Precip, data = wildfire)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.1479 -0.4284 -0.1282  0.1832  1.4611 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 3.162089   0.696929   4.537 3.94e-05 ***
+Temp        0.070026   0.011984   5.843 4.64e-07 ***
+Precip      0.032542   0.009123   3.567 0.000844 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.6385 on 47 degrees of freedom
+Multiple R-squared:  0.4642,    Adjusted R-squared:  0.4414 
+F-statistic: 20.36 on 2 and 47 DF,  p-value: 4.289e-07</code></pre>
+</div>
+</div>
+<section id="interpretation-of-the-wildfire-count-model" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="interpretation-of-the-wildfire-count-model"><span class="header-section-number">7.1</span> Interpretation of the Wildfire Count Model</h2>
+<p>For the log wildfire count model, the estimated regression equation is:</p>
+<p><span class="math display">\[
+\widehat{\log(Fires)} =
+3.162 + 0.070(Temp) + 0.033(Precip)
+\]</span></p>
+<p>The model has an <span class="math inline">\(R^2\)</span> of 0.464 and an adjusted <span class="math inline">\(R^2\)</span> of 0.441. This means that temperature and precipitation together explain about 46.4% of the variation in log wildfire counts.</p>
+<p>The overall F-test has a p-value of <span class="math inline">\(4.29 \times 10^{-7}\)</span>. At the 0.05 significance level, this indicates that the model with temperature and precipitation explains a statistically significant amount of variation in log wildfire counts.</p>
+<p>The estimated temperature coefficient is 0.0700. Interpreted on the original wildfire-count scale, this means that, holding precipitation constant, a one-degree Fahrenheit increase in annual average temperature is associated with an estimated 7.3% increase in number of fires, on average.</p>
+<p>The estimated precipitation coefficient is 0.0325. Interpreted on the original wildfire-count scale, this means that, holding temperature constant, a one-inch increase in annual precipitation is associated with an estimated 3.3% increase in number of fires, on average.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(log_fires_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 2.5 %     97.5 %
+(Intercept) 1.76004832 4.56412892
+Temp        0.04591771 0.09413357
+Precip      0.01418825 0.05089616</code></pre>
+</div>
+</div>
+</section>
+<section id="multicollinearity-check-for-wildfire-count-model" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="multicollinearity-check-for-wildfire-count-model"><span class="header-section-number">7.2</span> Multicollinearity Check for Wildfire Count Model</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(log_fires_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Temp   Precip 
+1.033086 1.033086 </code></pre>
+</div>
+</div>
+<p>The VIF values were both about 1.03, which suggests little concern about multicollinearity in the wildfire count model.</p>
+</section>
+<section id="diagnostic-plots-for-wildfire-count-model" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="diagnostic-plots-for-wildfire-count-model"><span class="header-section-number">7.3</span> Diagnostic Plots for Wildfire Count Model</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wildfire_final_project_files/figure-html/log-fires-diagnostics-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Diagnostic plots for the log-transformed wildfire count model.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="diagnostic-interpretation-for-wildfire-count-model" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="diagnostic-interpretation-for-wildfire-count-model"><span class="header-section-number">7.4</span> Diagnostic Interpretation for Wildfire Count Model</h2>
+<p>The diagnostic plots for the log wildfire count model look somewhat better than the acres burned model. The residuals vs fitted plot shows a slight pattern, but the residuals are mostly scattered around zero without a severe curve. The scale-location plot suggests that the residual spread is reasonably stable, though not perfectly constant.</p>
+<p>The Q-Q plot is reasonably close to a straight line through most of the distribution, with some deviation at the ends. This means the normality condition is not perfect, but it is reasonable enough for this project. The residuals vs leverage plot shows a few labeled observations, but none appear to have extremely large Cook’s distance. Overall, the log wildfire count model satisfies the regression conditions more convincingly than the log acres burned model.</p>
+</section>
+</section>
+<section id="comparison-of-the-two-models" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Comparison of the Two Models</h1>
+<p>The two models answer related but different questions. Acres burned measures wildfire severity, while number of fires measures wildfire frequency. Comparing the models helps show whether temperature and precipitation are better at explaining how many fires occur or how much land burns.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>             Model R_squared Adjusted_R_squared Overall_F_p_value
+1 Log Acres Burned    0.1356             0.0989          3.25e-02
+2        Log Fires    0.4642             0.4414          4.29e-07
+  Temp_Coefficient Precip_Coefficient
+1           0.0445             0.0406
+2           0.0700             0.0325</code></pre>
+</div>
+</div>
+<p>The two models produced different levels of explanatory power. The log acres burned model had an <span class="math inline">\(R^2\)</span> of 0.136 and an adjusted <span class="math inline">\(R^2\)</span> of 0.099, meaning that temperature and precipitation explained about 13.6% of the variation in log acres burned. The overall F-test for this model was significant with a p-value of 0.0325, so the model does provide some evidence that the climate variables are related to wildfire severity. However, the relationship was fairly weak.</p>
+<p>The log wildfire count model was stronger. It had an <span class="math inline">\(R^2\)</span> of 0.464 and an adjusted <span class="math inline">\(R^2\)</span> of 0.441, meaning that temperature and precipitation explained about 46.4% of the variation in log wildfire counts. The overall F-test was highly significant, with a p-value less than 0.001.</p>
+<p>The individual predictors also differed between the models. In the log acres burned model, precipitation was statistically significant at the 0.05 level, while temperature was close to significant but did not quite reach the 0.05 level. In the log wildfire count model, both temperature and precipitation were statistically significant. Overall, temperature and precipitation were better at explaining wildfire frequency than wildfire severity in this data set.</p>
+</section>
+<section id="results-and-discussion" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Results and Discussion</h1>
+<p>Overall, the results suggest that annual temperature and precipitation are associated with wildfire activity, but the strength of the relationship depends on how wildfire activity is measured. When wildfire activity was measured as acres burned, the model was statistically significant but explained only a modest amount of variation. This suggests that temperature and precipitation alone are not enough to explain wildfire severity. This makes sense because acres burned can be strongly affected by factors not included in the model, such as wind, fuel availability, drought history, ignition source, fire suppression, and the timing of storms.</p>
+<p>The wildfire count model was stronger. In that model, both temperature and precipitation were statistically significant predictors of annual wildfire counts. Holding precipitation constant, a one-degree Fahrenheit increase in annual average temperature was associated with an estimated 7.3% increase in the number of fires. Holding temperature constant, a one-inch increase in annual precipitation was associated with an estimated 3.3% increase in the number of fires.</p>
+<p>The positive coefficient for temperature matched my original expectation: hotter years tended to be associated with more wildfire activity. However, the positive coefficient for precipitation did not match my original prediction. I originally expected precipitation to be negatively associated with wildfire activity because wetter conditions might reduce fire risk. Instead, in this data set, greater annual precipitation was associated with more fires and more acres burned. One possible explanation is that precipitation can increase vegetation growth, creating more fuel that can burn later in the season or in future dry periods.</p>
+</section>
+<section id="limitations" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Limitations</h1>
+<p>This study has several limitations. First, it is observational, so the regression results show association rather than causation. Second, only 10 states and five years were included, so the sample may not represent the entire United States. Third, wildfire activity is influenced by many variables that were not included in the model, such as drought, wind, vegetation type, human ignition, lightning, land management, fuel moisture, and firefighting resources. Fourth, state-level averages are broad and may hide important local variation within each state.</p>
+<p>Another limitation is that the selected years may include unusual wildfire seasons, especially if a single state-year had an extremely large fire season. These influential observations can affect regression results, especially for acres burned. Finally, annual precipitation may have a complicated relationship with wildfire activity. More precipitation can reduce dryness in the short term but can also increase vegetation growth, which may provide more fuel in later fire seasons.</p>
+</section>
+<section id="surprises-encountered" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Surprises Encountered</h1>
+<p>The most surprising result was the positive relationship between precipitation and wildfire activity. I originally expected higher precipitation to be associated with fewer fires and fewer acres burned. However, both regression models estimated positive precipitation coefficients. This does not necessarily mean that precipitation directly causes fires. Instead, it may show that the relationship between precipitation and wildfire activity is more complicated than I expected. Wet periods can increase plant growth, and that added vegetation may later become fuel. Another surprise was that wildfire counts were easier to model than acres burned. I expected acres burned to be closely related to climate, but the results suggest that wildfire severity depends on many additional factors beyond annual temperature and precipitation.</p>
+</section>
+<section id="what-i-would-do-differently" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> What I Would Do Differently</h1>
+<p>If I repeated this study, I would collect a larger data set with more years and possibly all 50 states. I would also include additional climate variables such as drought index, wind, humidity, fuel moisture, and previous-year precipitation. A more detailed analysis could use county-level data or ecological regions rather than state-level averages. This would better reflect the fact that wildfire conditions can vary greatly within a single state.</p>
+</section>
+<section id="conclusion" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Conclusion</h1>
+<p>The purpose of this study was to examine whether annual average temperature and annual precipitation could help predict wildfire activity across 10 selected U.S. states from 2020 to 2024. I analyzed wildfire activity using two response variables: acres burned as a measure of wildfire severity and number of fires as a measure of wildfire frequency.</p>
+<p>The results showed that temperature and precipitation were statistically related to both measures of wildfire activity, but they explained wildfire frequency better than wildfire severity. The log acres burned model was statistically significant but had a relatively low <span class="math inline">\(R^2\)</span>, while the log wildfire count model explained a much larger portion of variation in wildfire counts. These results suggest that annual climate variables are useful for understanding wildfire patterns, but they cannot fully explain wildfire outcomes by themselves. Wildfire activity is shaped by many interacting factors, including climate, fuel availability, drought history, ignition sources, wind, and land management.</p>
+</section>
+<section id="appendix-full-r-code" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Appendix: Full R Code</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>wildfire <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"wildfire_dataset.csv"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert variables</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>wildfire<span class="sc">$</span>State <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(wildfire<span class="sc">$</span>State)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>wildfire<span class="sc">$</span>Year <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(wildfire<span class="sc">$</span>Year)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Create log-transformed response variables</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>wildfire<span class="sc">$</span>LogFires <span class="ot">&lt;-</span> <span class="fu">log</span>(wildfire<span class="sc">$</span>Fires)</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>wildfire<span class="sc">$</span>LogAcresBurned <span class="ot">&lt;-</span> <span class="fu">log</span>(wildfire<span class="sc">$</span>AcresBurned)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit raw models</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>raw_acres_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(AcresBurned <span class="sc">~</span> Temp <span class="sc">+</span> Precip, <span class="at">data =</span> wildfire)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>raw_fires_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fires <span class="sc">~</span> Temp <span class="sc">+</span> Precip, <span class="at">data =</span> wildfire)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit log-transformed models</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>log_acres_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(LogAcresBurned <span class="sc">~</span> Temp <span class="sc">+</span> Precip, <span class="at">data =</span> wildfire)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>log_fires_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(LogFires <span class="sc">~</span> Temp <span class="sc">+</span> Precip, <span class="at">data =</span> wildfire)</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary statistics</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wildfire[, <span class="fu">c</span>(<span class="st">"Temp"</span>, <span class="st">"Precip"</span>, <span class="st">"Fires"</span>, <span class="st">"AcresBurned"</span>)])</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Histograms</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildfire, <span class="fu">aes</span>(<span class="at">x =</span> AcresBurned)) <span class="sc">+</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Annual Acres Burned"</span>,</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Acres Burned"</span>,</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildfire, <span class="fu">aes</span>(<span class="at">x =</span> Fires)) <span class="sc">+</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Annual Wildfire Counts"</span>,</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Number of Fires"</span>,</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildfire, <span class="fu">aes</span>(<span class="at">x =</span> LogAcresBurned)) <span class="sc">+</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Log(Acres Burned)"</span>,</span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Log(Acres Burned)"</span>,</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildfire, <span class="fu">aes</span>(<span class="at">x =</span> LogFires)) <span class="sc">+</span></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>) <span class="sc">+</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Log(Wildfire Counts)"</span>,</span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Log(Number of Fires)"</span>,</span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplots for acres burned</span></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildfire, <span class="fu">aes</span>(<span class="at">x =</span> Temp, <span class="at">y =</span> AcresBurned)) <span class="sc">+</span></span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Acres Burned vs Annual Average Temperature"</span>,</span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Annual Average Temperature (F)"</span>,</span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Acres Burned"</span>)</span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildfire, <span class="fu">aes</span>(<span class="at">x =</span> Precip, <span class="at">y =</span> AcresBurned)) <span class="sc">+</span></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Acres Burned vs Annual Precipitation"</span>,</span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Annual Precipitation (inches)"</span>,</span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Acres Burned"</span>)</span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplots for wildfire counts</span></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildfire, <span class="fu">aes</span>(<span class="at">x =</span> Temp, <span class="at">y =</span> Fires)) <span class="sc">+</span></span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wildfire Counts vs Annual Average Temperature"</span>,</span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Annual Average Temperature (F)"</span>,</span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Fires"</span>)</span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildfire, <span class="fu">aes</span>(<span class="at">x =</span> Precip, <span class="at">y =</span> Fires)) <span class="sc">+</span></span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wildfire Counts vs Annual Precipitation"</span>,</span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Annual Precipitation (inches)"</span>,</span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Number of Fires"</span>)</span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlations</span></span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cor</span>(wildfire[, <span class="fu">c</span>(<span class="st">"Temp"</span>, <span class="st">"Precip"</span>, <span class="st">"Fires"</span>, <span class="st">"AcresBurned"</span>,</span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"LogFires"</span>, <span class="st">"LogAcresBurned"</span>)]), <span class="dv">3</span>)</span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a><span class="co"># Primary model: log acres burned</span></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(log_acres_model)</span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(log_acres_model)</span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(log_acres_model)</span>
+<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(log_acres_model)</span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a><span class="co"># Secondary model: log wildfire counts</span></span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(log_fires_model)</span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(log_fires_model)</span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(log_fires_model)</span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(log_fires_model)</span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a><span class="co"># Model comparison</span></span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a>comparison <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Log Acres Burned"</span>, <span class="st">"Log Fires"</span>),</span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a>  <span class="at">R_squared =</span> <span class="fu">c</span>(<span class="fu">summary</span>(log_acres_model)<span class="sc">$</span>r.squared, <span class="fu">summary</span>(log_fires_model)<span class="sc">$</span>r.squared),</span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a>  <span class="at">Adjusted_R_squared =</span> <span class="fu">c</span>(<span class="fu">summary</span>(log_acres_model)<span class="sc">$</span>adj.r.squared, <span class="fu">summary</span>(log_fires_model)<span class="sc">$</span>adj.r.squared),</span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a>  <span class="at">Overall_F_p_value =</span> <span class="fu">c</span>(</span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pf</span>(<span class="fu">summary</span>(log_acres_model)<span class="sc">$</span>fstatistic[<span class="dv">1</span>],</span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a>       <span class="fu">summary</span>(log_acres_model)<span class="sc">$</span>fstatistic[<span class="dv">2</span>],</span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a>       <span class="fu">summary</span>(log_acres_model)<span class="sc">$</span>fstatistic[<span class="dv">3</span>],</span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a>       <span class="at">lower.tail =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pf</span>(<span class="fu">summary</span>(log_fires_model)<span class="sc">$</span>fstatistic[<span class="dv">1</span>],</span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a>       <span class="fu">summary</span>(log_fires_model)<span class="sc">$</span>fstatistic[<span class="dv">2</span>],</span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a>       <span class="fu">summary</span>(log_fires_model)<span class="sc">$</span>fstatistic[<span class="dv">3</span>],</span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a>       <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a>  <span class="at">Temp_Coefficient =</span> <span class="fu">c</span>(<span class="fu">coef</span>(log_acres_model)[<span class="st">"Temp"</span>], <span class="fu">coef</span>(log_fires_model)[<span class="st">"Temp"</span>]),</span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a>  <span class="at">Precip_Coefficient =</span> <span class="fu">c</span>(<span class="fu">coef</span>(log_acres_model)[<span class="st">"Precip"</span>], <span class="fu">coef</span>(log_fires_model)[<span class="st">"Precip"</span>])</span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>comparison</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
