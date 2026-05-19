@@ -14,7 +14,7 @@
        BASIC SEO / LINK PREVIEW INFO
        You can edit these later if you want.
        ============================================================ -->
-  <meta name="description" content="Portfolio for Andrew Kerfoot: ecoinformatics, ecological modeling, environmental data science, and research projects." />
+  <meta name="description" content="Portfolio for Andrew Kerfoot: ecoinformatics, ecological modeling, environmental data science, bioinformatics-style data analysis, and research projects." />
 
   <style>
     /* ============================================================
@@ -333,7 +333,6 @@
           <a href="#writing">Posters & Writing</a>
           <a href="#skills">Skills</a>
           <a href="#contact">Contact</a>
-          <!-- Replace this with your actual resume PDF filename after you add it to /assets -->
           <a href="assets/resume.pdf">Resume</a>
         </div>
       </nav>
@@ -343,7 +342,6 @@
   <main id="top">
     <!-- ============================================================
          HERO / INTRO
-         Fill this in with your strongest 2-3 sentence summary.
          ============================================================ -->
     <section class="hero">
       <div class="container hero-grid">
@@ -351,13 +349,12 @@
           <div class="eyebrow">Ecoinformatics · Ecological Modeling · Environmental Data</div>
           <h1>Hi, I’m Andrew Kerfoot.</h1>
 
-          <!-- EDIT THIS PARAGRAPH -->
           <p>
-            I am an Informatics student with an emphasis in Ecoinformatics at Northern Arizona University.
-            My work focuses on ecological modeling, disease dynamics, environmental data, and reproducible computational workflows.
+            I am a recent Informatics graduate with an emphasis in Ecoinformatics from Northern Arizona University.
+            My work focuses on ecological modeling, disease dynamics, environmental data, bioinformatics-style analysis,
+            and reproducible computational workflows.
           </p>
 
-          <!-- EDIT THESE LINKS -->
           <div class="button-row">
             <a class="button primary" href="#projects">View Projects</a>
             <a class="button" href="assets/resume.pdf">Resume</a>
@@ -372,11 +369,10 @@
              If you do not want a photo, delete the <img> line.
              ======================================================== -->
         <aside class="profile-card">
-
-          <p><strong>Current focus:</strong> Environmental data science and ecological modeling</p>
-          <p><strong>Degree:</strong> Informatics B.S., Ecoinformatics emphasis</p>
+          <p><strong>Current focus:</strong> Environmental data science, ecological modeling, and applied biological data analysis</p>
+          <p><strong>Degree:</strong> B.S. in Informatics, Ecoinformatics emphasis</p>
           <p><strong>Institution:</strong> Northern Arizona University</p>
-          <p><strong>Interests:</strong> Python, R, forecasting, disease ecology, climate data</p>
+          <p><strong>Interests:</strong> Python, R, SQL, forecasting, disease ecology, bioinformatics-style data analysis, climate data</p>
         </aside>
       </div>
     </section>
@@ -417,14 +413,36 @@
             </div>
             <div class="link-row">
               <a href="https://github.com/adk254/HURA_25-26" target="_blank" rel="noopener">GitHub</a>
-              <!-- Add this PDF to assets/ or update filename -->
               <a href="assets/HURA_poster.pdf">Poster PDF</a>
-              <!-- Optional: add a project writeup -->
               <a href="assets/capstone_paper.pdf">Full Project Paper</a>
             </div>
           </article>
 
           <!-- PROJECT 2 -->
+          <article class="card">
+            <h3>Immune Cell Analytics Dashboard</h3>
+            <p>
+              Built a reproducible Python, SQLite, and Streamlit dashboard for analyzing clinical-style immune cell population data.
+              The project loads raw cell-count data into a relational database, calculates immune-cell relative frequencies, compares
+              melanoma treatment responders and non-responders, applies Mann–Whitney U tests with FDR correction, and presents results
+              through an interactive dashboard.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Python</span>
+              <span class="tag">SQLite</span>
+              <span class="tag">pandas</span>
+              <span class="tag">scipy</span>
+              <span class="tag">statsmodels</span>
+              <span class="tag">Plotly</span>
+              <span class="tag">Streamlit</span>
+            </div>
+            <div class="link-row">
+              <a href="https://github.com/adk254/Immune-Cell-Analytics-Dashboard" target="_blank" rel="noopener">GitHub</a>
+              <a href="https://adk254-immune-cell-analysis-dashboard.streamlit.app/" target="_blank" rel="noopener">Live Dashboard</a>
+            </div>
+          </article>
+
+          <!-- PROJECT 3 -->
           <article class="card">
             <h3>ILI Forecasting with STL + ETS</h3>
             <p>
@@ -439,17 +457,17 @@
             </div>
             <div class="link-row">
               <a href="https://github.com/sjfox/ATSF2026" target="_blank" rel="noopener">GitHub</a>
-              <a href="https://sjfox.github.io/ATSF2026-dashboard/forecast.html?as_of=2020-02-29&interval=95%25&target_var=ili+perc&xaxis_range=2019-08-18&xaxis_range=2020-03-29&yaxis_range=-0.2221099840001844&yaxis_range=11.257711185351003&model=delphi-epicast&model=hist-avg&model=adk-rwdriftbs&model=adk-stletsbc&location=US+National">Forecast Results</a>
+              <a href="https://sjfox.github.io/ATSF2026-dashboard/forecast.html?as_of=2020-02-29&interval=95%25&target_var=ili+perc&xaxis_range=2019-08-18&xaxis_range=2020-03-29&yaxis_range=-0.2221099840001844&yaxis_range=11.257711185351003&model=delphi-epicast&model=hist-avg&model=adk-rwdriftbs&model=adk-stletsbc&location=US+National" target="_blank" rel="noopener">Forecast Results</a>
               <a href="assets/forecast_paper.pdf">Report PDF</a>
             </div>
           </article>
 
-          <!-- PROJECT 3 -->
+          <!-- PROJECT 4 -->
           <article class="card">
-            <h3>Wildfire Regression Analysis.</h3>
+            <h3>Wildfire Regression Analysis</h3>
             <p>
-              Analyzed relationships between temperature, precipitation, and wildfire counts and size for 10 U.S. states using statistical modeling,
-              data visualization, and careful interpretation of observational data.
+              Analyzed relationships between temperature, precipitation, wildfire counts, and fire size for 10 U.S. states using statistical modeling,
+              data visualization, and careful interpretation of observational environmental data.
             </p>
             <div class="tag-row">
               <span class="tag">R</span>
@@ -458,7 +476,6 @@
               <span class="tag">Environmental science</span>
             </div>
             <div class="link-row">
-              <!-- Replace these with actual files/links -->
               <a href="assets/wildfire_final_project.html">Report HTML</a>
               <a href="https://github.com/adk254" target="_blank" rel="noopener">GitHub</a>
             </div>
@@ -516,7 +533,8 @@
             <h3>Programming & Data</h3>
             <ul>
               <li>Python, R, SQL</li>
-              <li>pandas, NumPy, tidyverse</li>
+              <li>pandas, NumPy, scipy, statsmodels, tidyverse</li>
+              <li>SQLite, Streamlit, Plotly</li>
               <li>Git, GitHub, reproducible workflows</li>
             </ul>
           </article>
@@ -525,6 +543,7 @@
             <h3>Modeling & Analysis</h3>
             <ul>
               <li>Ecological simulation modeling</li>
+              <li>Disease dynamics and spatial modeling</li>
               <li>Time-series forecasting</li>
               <li>Regression and statistical analysis</li>
             </ul>
@@ -535,6 +554,7 @@
             <ul>
               <li>Research posters and presentations</li>
               <li>Technical reports</li>
+              <li>Interactive dashboards</li>
               <li>Quarto, R Markdown, Jupyter</li>
             </ul>
           </article>
@@ -544,7 +564,6 @@
 
     <!-- ============================================================
          CONTACT
-         Fill in your preferred email.
          ============================================================ -->
     <section id="contact">
       <div class="container">
@@ -552,10 +571,9 @@
           <h2>Contact</h2>
           <p>
             I am interested in opportunities involving environmental data, ecological modeling,
-            research support, data analysis, and scientific computing.
+            research support, data analysis, bioinformatics-style analysis, and scientific computing.
           </p>
 
-          <!-- EDIT EMAIL -->
           <p>
             Email: <a href="mailto:andrewkerfoot1122@gmail.com">andrewkerfoot1122@gmail.com</a><br />
             GitHub: <a href="https://github.com/adk254" target="_blank" rel="noopener">github.com/adk254</a><br />
@@ -568,7 +586,6 @@
 
   <footer>
     <div class="container">
-      <!-- You can remove or edit this. -->
       <p>© 2026 Andrew Kerfoot. Built with GitHub Pages.</p>
     </div>
   </footer>
