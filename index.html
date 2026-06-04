@@ -3,35 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- ============================================================
-       PAGE TITLE
-       This appears in the browser tab and in some search previews.
-       ============================================================ -->
-  <title>Andrew Kerfoot | Portfolio</title>
-
-  <!-- ============================================================
-       BASIC SEO / LINK PREVIEW INFO
-       You can edit these later if you want.
-       ============================================================ -->
-  <meta name="description" content="Portfolio for Andrew Kerfoot: ecoinformatics, ecological modeling, environmental data science, bioinformatics-style data analysis, and research projects." />
+  <meta
+    name="description"
+    content="Andrew Kerfoot's ecoinformatics portfolio: ecological disease modeling, environmental data analysis, forecasting, and scientific computing."
+  />
+  <title>Andrew Kerfoot | Ecoinformatics Portfolio</title>
 
   <style>
-    /* ============================================================
-       GLOBAL STYLE SETTINGS
-       You can change the colors here if you want a different look.
-       ============================================================ */
     :root {
-      --bg: #f7f7f4;
-      --card: #ffffff;
-      --text: #1f2933;
-      --muted: #5f6c7b;
-      --accent: #2f6f5e;
-      --accent-dark: #245548;
-      --border: #e1e4e8;
-      --shadow: 0 10px 25px rgba(31, 41, 51, 0.08);
-      --radius: 18px;
-      --max-width: 1050px;
+      --bg: #f7f8f4;
+      --surface: #ffffff;
+      --surface-soft: #eef3ed;
+      --ink: #1d2a25;
+      --muted: #60706a;
+      --line: #d8e1dc;
+      --accent: #315f54;
+      --accent-dark: #23463e;
+      --accent-soft: #dcebe5;
+      --gold: #b87932;
+      --shadow: 0 18px 50px rgba(28, 52, 45, 0.10);
+      --radius-lg: 26px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --max-width: 1180px;
     }
 
     * {
@@ -44,275 +38,647 @@
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+      background:
+        radial-gradient(circle at top right, rgba(194, 221, 207, 0.50), transparent 30rem),
+        linear-gradient(180deg, #fbfcf9 0%, var(--bg) 100%);
+      color: var(--ink);
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
     }
 
     a {
-      color: var(--accent);
+      color: inherit;
       text-decoration: none;
-      font-weight: 600;
     }
 
-    a:hover {
-      color: var(--accent-dark);
-      text-decoration: underline;
+    section {
+      scroll-margin-top: 88px;
     }
 
     .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 0 1.25rem;
+      width: min(calc(100% - 2rem), var(--max-width));
+      margin-inline: auto;
     }
 
-    /* ============================================================
-       TOP NAVIGATION
-       ============================================================ */
-    header {
+    .site-header {
       position: sticky;
       top: 0;
-      z-index: 10;
-      background: rgba(247, 247, 244, 0.95);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(10px);
+      z-index: 30;
+      border-bottom: 1px solid rgba(216, 225, 220, 0.82);
+      background: rgba(251, 252, 249, 0.88);
+      backdrop-filter: blur(18px);
     }
 
-    nav {
+    .nav {
+      min-height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.9rem 0;
-      gap: 1rem;
+      gap: 1.5rem;
     }
 
-    .nav-name {
+    .brand {
       font-weight: 800;
-      letter-spacing: -0.02em;
-      color: var(--text);
+      letter-spacing: -0.03em;
+      font-size: 1.08rem;
     }
 
     .nav-links {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       justify-content: flex-end;
-      gap: 0.9rem;
-      font-size: 0.95rem;
+      gap: 0.25rem;
     }
 
-    /* ============================================================
-       HERO SECTION
-       ============================================================ */
+    .nav-links a {
+      padding: 0.52rem 0.74rem;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.91rem;
+      font-weight: 700;
+      transition: 160ms ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--accent-dark);
+      background: var(--accent-soft);
+      outline: none;
+    }
+
+    .nav-links .resume-link {
+      margin-left: 0.2rem;
+      color: #ffffff;
+      background: var(--accent);
+    }
+
+    .nav-links .resume-link:hover,
+    .nav-links .resume-link:focus-visible {
+      color: #ffffff;
+      background: var(--accent-dark);
+    }
+
     .hero {
-      padding: 5rem 0 3.5rem;
+      padding: 5.6rem 0 4.4rem;
+      overflow: hidden;
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.6fr 0.9fr;
-      gap: 2rem;
+      grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
       align-items: center;
+      gap: 2rem;
     }
 
     .eyebrow {
+      margin: 0 0 0.78rem;
       color: var(--accent);
-      font-weight: 800;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.17em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 0.85rem;
-      margin-bottom: 0.75rem;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin-top: 0;
+      line-height: 1.12;
+      letter-spacing: -0.045em;
     }
 
     h1 {
-      font-size: clamp(2.3rem, 5vw, 4.5rem);
-      line-height: 1.02;
-      letter-spacing: -0.06em;
-      margin: 0 0 1rem;
+      max-width: 760px;
+      margin-bottom: 1.2rem;
+      font-size: clamp(3.15rem, 8vw, 6.4rem);
     }
 
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--muted);
+    h2 {
+      margin-bottom: 0.88rem;
+      font-size: clamp(2rem, 4.4vw, 3.45rem);
+    }
+
+    h3 {
+      margin-bottom: 0.58rem;
+      font-size: 1.42rem;
+    }
+
+    p {
+      margin-top: 0;
+    }
+
+    .hero-copy {
       max-width: 720px;
-      margin: 0 0 1.5rem;
     }
 
-    .button-row {
+    .hero-copy .lede {
+      max-width: 690px;
+      color: var(--muted);
+      font-size: clamp(1.08rem, 1.9vw, 1.28rem);
+    }
+
+    .hero-actions,
+    .card-actions,
+    .spotlight-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 1.5rem;
+      gap: 0.72rem;
     }
 
     .button {
-      display: inline-block;
-      padding: 0.75rem 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      min-height: 44px;
+      padding: 0.72rem 1rem;
+      border: 1px solid var(--line);
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      font-weight: 700;
-      box-shadow: 0 4px 12px rgba(31, 41, 51, 0.04);
+      background: var(--surface);
+      color: var(--accent-dark);
+      font-size: 0.92rem;
+      font-weight: 800;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      outline: none;
     }
 
     .button.primary {
-      background: var(--accent);
-      color: white;
       border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
     }
 
-    .button:hover {
-      transform: translateY(-1px);
-      text-decoration: none;
+    .button.primary:hover,
+    .button.primary:focus-visible {
+      background: var(--accent-dark);
     }
 
-    .profile-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.35rem;
+    .hero-visual {
+      position: relative;
+      min-height: 410px;
+      display: grid;
+      place-items: center;
+    }
+
+    .hero-orbit {
+      position: absolute;
+      width: min(31rem, 84vw);
+      aspect-ratio: 1;
+      border: 1px solid rgba(49, 95, 84, 0.18);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, rgba(219, 236, 228, 0.92), rgba(243, 247, 243, 0.25) 60%, transparent 61%);
+    }
+
+    .hero-orbit::before,
+    .hero-orbit::after {
+      position: absolute;
+      content: "";
+      border-radius: 50%;
+    }
+
+    .hero-orbit::before {
+      inset: 11%;
+      border: 1px dashed rgba(49, 95, 84, 0.18);
+    }
+
+    .hero-orbit::after {
+      width: 14px;
+      aspect-ratio: 1;
+      top: 15%;
+      right: 13%;
+      background: var(--gold);
+      box-shadow: -275px 238px 0 -3px rgba(49, 95, 84, 0.62);
+    }
+
+    .hero-salamander {
+      position: relative;
+      z-index: 2;
+      width: min(34rem, 100%);
+      filter: drop-shadow(0 20px 24px rgba(28, 52, 45, 0.18));
+      transform: rotate(-2deg);
+    }
+
+    .hero-note {
+      position: absolute;
+      right: 0;
+      bottom: 1.2rem;
+      z-index: 3;
+      max-width: 220px;
+      padding: 0.82rem 0.92rem;
+      border: 1px solid rgba(216, 225, 220, 0.94);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.88);
       box-shadow: var(--shadow);
-    }
-
-    .profile-card img {
-      width: 100%;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      margin-bottom: 1rem;
-      display: block;
-    }
-
-    .profile-card p {
-      margin: 0.25rem 0;
-      font-size: 0.95rem;
       color: var(--muted);
+      font-size: 0.81rem;
+      line-height: 1.45;
+      backdrop-filter: blur(12px);
     }
 
-    .profile-card strong {
-      color: var(--text);
+    .hero-note strong {
+      display: block;
+      margin-bottom: 0.18rem;
+      color: var(--accent-dark);
+      font-size: 0.85rem;
     }
 
-    /* ============================================================
-       SECTIONS
-       ============================================================ */
-    section {
-      padding: 3rem 0;
+    .quick-facts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.72rem;
+      padding: 0 0 4.5rem;
+    }
+
+    .fact {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.66);
+    }
+
+    .fact strong {
+      display: block;
+      margin-bottom: 0.12rem;
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .fact span {
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .section {
+      padding: 5.2rem 0;
     }
 
     .section-heading {
       display: flex;
       align-items: end;
       justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
+      gap: 1.4rem;
+      margin-bottom: 1.8rem;
     }
 
-    h2 {
-      font-size: clamp(1.7rem, 3vw, 2.4rem);
-      margin: 0;
-      letter-spacing: -0.04em;
-    }
-
-    .section-note {
+    .section-heading p {
+      max-width: 640px;
+      margin-bottom: 0.12rem;
       color: var(--muted);
-      max-width: 650px;
-      margin: 0.5rem 0 0;
     }
 
-    .grid {
+    .section.alt {
+      border-block: 1px solid var(--line);
+      background: rgba(232, 240, 235, 0.55);
+    }
+
+    .spotlight {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .spotlight-top {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
+      grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+      align-items: stretch;
     }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.15rem;
-      box-shadow: 0 6px 18px rgba(31, 41, 51, 0.05);
+    .spotlight-copy {
+      padding: clamp(1.5rem, 4vw, 3rem);
     }
 
-    .card h3 {
-      margin: 0 0 0.4rem;
-      font-size: 1.1rem;
-      line-height: 1.25;
-    }
-
-    .card p {
+    .spotlight-copy p {
       color: var(--muted);
-      margin: 0.5rem 0;
+    }
+
+    .spotlight-copy .impact {
+      margin-top: 1.25rem;
+      padding-left: 1rem;
+      border-left: 4px solid var(--gold);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .fieldwork-figure {
+      min-height: 420px;
+      margin: 0;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      background: #233a34;
+    }
+
+    .fieldwork-figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    figcaption {
+      padding: 0.72rem 0.92rem;
+      color: #dfe9e5;
+      background: #233a34;
+      font-size: 0.78rem;
+    }
+
+    .model-figure {
+      margin: 0;
+      padding: 1rem 1rem 0;
+      border-top: 1px solid var(--line);
+      background: #fafbf9;
+    }
+
+    .model-figure img {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .model-figure figcaption {
+      padding-inline: 0.18rem;
+      color: var(--muted);
+      background: transparent;
     }
 
     .tag-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.45rem;
-      margin: 0.85rem 0;
+      gap: 0.42rem;
+      margin: 1rem 0 1.25rem;
     }
 
     .tag {
-      display: inline-block;
-      border: 1px solid var(--border);
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0.28rem 0.62rem;
       border-radius: 999px;
-      padding: 0.22rem 0.55rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-      background: #fafafa;
+      color: var(--accent-dark);
+      background: var(--accent-soft);
+      font-size: 0.76rem;
+      font-weight: 800;
     }
 
-    .link-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 0.9rem;
-      font-size: 0.95rem;
-    }
-
-    .two-column {
+    .projects-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1rem;
     }
 
-    ul {
-      padding-left: 1.2rem;
-      margin: 0.6rem 0 0;
+    .project-card {
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      box-shadow: 0 12px 36px rgba(28, 52, 45, 0.06);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(49, 95, 84, 0.48);
+      box-shadow: 0 18px 42px rgba(28, 52, 45, 0.11);
+    }
+
+    .project-card img {
+      width: 100%;
+      aspect-ratio: 16 / 8.4;
+      object-fit: cover;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .project-card .card-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 1.25rem;
+    }
+
+    .project-card p {
       color: var(--muted);
     }
 
-    li {
-      margin-bottom: 0.3rem;
+    .project-card .card-actions {
+      margin-top: auto;
+      padding-top: 0.3rem;
+    }
+
+    .compact-card {
+      padding: 1.25rem;
+    }
+
+    .compact-card .mini-kicker {
+      color: var(--accent);
+      font-size: 0.74rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .forecast-image {
+      object-position: center top;
+    }
+
+    .writing-grid,
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .resource-card,
+    .skill-card {
+      padding: 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .resource-card ul,
+    .skill-card ul {
+      margin: 0;
+      padding-left: 1.12rem;
+    }
+
+    .resource-card li,
+    .skill-card li {
+      margin-bottom: 0.45rem;
+      color: var(--muted);
+    }
+
+    .resource-card a {
+      color: var(--accent-dark);
+      font-weight: 800;
+      text-decoration: underline;
+      text-decoration-color: rgba(49, 95, 84, 0.28);
+      text-underline-offset: 3px;
+    }
+
+    .resource-card a:hover {
+      text-decoration-color: currentColor;
+    }
+
+    .contact-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 1.5rem;
+      padding: clamp(1.4rem, 4vw, 2.35rem);
+      border-radius: var(--radius-lg);
+      color: #ffffff;
+      background:
+        linear-gradient(135deg, rgba(49, 95, 84, 0.98), rgba(35, 70, 62, 0.98)),
+        var(--accent);
+      box-shadow: var(--shadow);
+    }
+
+    .contact-panel h2 {
+      margin-bottom: 0.55rem;
+    }
+
+    .contact-panel p {
+      max-width: 760px;
+      margin-bottom: 0;
+      color: rgba(255, 255, 255, 0.80);
+    }
+
+    .contact-panel .button {
+      border-color: rgba(255, 255, 255, 0.24);
+      color: var(--accent-dark);
+      background: #ffffff;
     }
 
     footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 0;
+      padding: 2rem 0 3rem;
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 0.84rem;
     }
 
-    /* ============================================================
-       MOBILE RESPONSIVE LAYOUT
-       ============================================================ */
-    @media (max-width: 850px) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 650ms ease, transform 650ms ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 880px) {
       .hero-grid,
-      .grid,
-      .two-column {
+      .spotlight-top {
         grid-template-columns: 1fr;
       }
 
       .hero {
-        padding-top: 3.5rem;
+        padding-top: 4.35rem;
       }
 
-      nav {
+      .hero-visual {
+        min-height: 320px;
+      }
+
+      .hero-note {
+        right: 0.4rem;
+        bottom: 0;
+      }
+
+      .quick-facts,
+      .skills-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .fieldwork-figure {
+        min-height: 360px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .nav {
+        min-height: auto;
+        padding-block: 0.78rem;
         align-items: flex-start;
         flex-direction: column;
       }
 
       .nav-links {
+        justify-content: flex-start;
+        gap: 0.12rem;
+      }
+
+      .nav-links a {
+        padding: 0.4rem 0.56rem;
+        font-size: 0.82rem;
+      }
+
+      .section {
+        padding: 4rem 0;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .projects-grid,
+      .writing-grid,
+      .skills-grid,
+      .quick-facts,
+      .contact-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        min-height: 270px;
+      }
+
+      .hero-note {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        margin-top: -1.6rem;
+        justify-self: end;
+      }
+
+      .contact-panel .hero-actions {
         justify-content: flex-start;
       }
     }
@@ -320,265 +686,373 @@
 </head>
 
 <body>
-  <!-- ============================================================
-       NAVIGATION
-       Edit link names if you change section names.
-       ============================================================ -->
-  <header>
-    <div class="container">
-      <nav>
-        <a class="nav-name" href="#top">Andrew Kerfoot</a>
-        <div class="nav-links">
-          <a href="#projects">Projects</a>
-          <a href="#writing">Posters & Writing</a>
-          <a href="#skills">Skills</a>
-          <a href="#contact">Contact</a>
-          <a href="assets/resume.pdf">Resume</a>
-        </div>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Andrew Kerfoot home">Andrew Kerfoot</a>
+
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#projects">Projects</a>
+        <a href="#writing">Posters & Writing</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+        <a class="resume-link" href="assets/resume.pdf" target="_blank" rel="noopener">Resume</a>
       </nav>
     </div>
   </header>
 
   <main id="top">
-    <!-- ============================================================
-         HERO / INTRO
-         ============================================================ -->
     <section class="hero">
       <div class="container hero-grid">
-        <div>
-          <div class="eyebrow">Ecoinformatics · Ecological Modeling · Environmental Data</div>
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Ecoinformatics · Ecological Modeling · Environmental Data</p>
           <h1>Hi, I’m Andrew Kerfoot.</h1>
-
-          <p>
-            I am a recent Informatics graduate with an emphasis in Ecoinformatics from Northern Arizona University.
-            My work focuses on ecological modeling, disease dynamics, environmental data, bioinformatics-style analysis,
-            and reproducible computational workflows.
+          <p class="lede">
+            I am a recent Informatics graduate with an emphasis in Ecoinformatics from
+            Northern Arizona University. I build reproducible Python and R workflows
+            for ecological disease modeling, climate-data integration, probabilistic
+            forecasting, and applied biological data analysis.
           </p>
 
-          <div class="button-row">
-            <a class="button primary" href="#projects">View Projects</a>
-            <a class="button" href="assets/resume.pdf">Resume</a>
-            <a class="button" href="https://github.com/adk254" target="_blank" rel="noopener">GitHub</a>
-            <a class="button" href="https://www.linkedin.com/in/andrewkerfoot/" target="_blank" rel="noopener">LinkedIn</a>
+          <div class="hero-actions">
+            <a class="button primary" href="#projects">Explore projects ↓</a>
+            <a class="button" href="assets/resume.pdf" target="_blank" rel="noopener">View resume ↗</a>
+            <a class="button" href="https://github.com/adk254" target="_blank" rel="noopener">GitHub ↗</a>
+            <a class="button" href="https://www.linkedin.com/in/andrewkerfoot" target="_blank" rel="noopener">LinkedIn ↗</a>
           </div>
         </div>
 
-        <!-- ========================================================
-             PROFILE CARD
-             Optional: add your own image as assets/profile.jpg.
-             If you do not want a photo, delete the <img> line.
-             ======================================================== -->
-        <aside class="profile-card">
-          <p><strong>Current focus:</strong> Environmental data science, ecological modeling, and applied biological data analysis</p>
-          <p><strong>Degree:</strong> B.S. in Informatics, Ecoinformatics emphasis</p>
-          <p><strong>Institution:</strong> Northern Arizona University</p>
-          <p><strong>Interests:</strong> Python, R, SQL, forecasting, disease ecology, bioinformatics-style data analysis, climate data</p>
-        </aside>
+        <div class="hero-visual reveal" aria-label="Tiger salamander research image">
+          <div class="hero-orbit" aria-hidden="true"></div>
+          <img
+            class="hero-salamander"
+            src="assets/salamander_image.png"
+            alt="Tiger salamander held in a gloved hand during field research"
+          />
+          <div class="hero-note">
+            <strong>Current focus</strong>
+            Climate-driven Ambystoma tigrinum virus dynamics across connected pond networks.
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         PROJECTS
-         Each project card has:
-         - title
-         - short employer-friendly description
-         - tools/tags
-         - links to GitHub, poster, paper, or demo
-         Add/remove cards as needed.
-         ============================================================ -->
-    <section id="projects">
+    <div class="container quick-facts reveal" aria-label="Quick facts">
+      <div class="fact">
+        <strong>Degree</strong>
+        <span>B.S. Informatics, Ecoinformatics emphasis</span>
+      </div>
+      <div class="fact">
+        <strong>Primary tools</strong>
+        <span>Python, R, SQL, Git</span>
+      </div>
+      <div class="fact">
+        <strong>Research themes</strong>
+        <span>Disease ecology, forecasting, climate data</span>
+      </div>
+      <div class="fact">
+        <strong>Institution</strong>
+        <span>Northern Arizona University</span>
+      </div>
+    </div>
+
+    <section class="section alt" id="projects">
       <div class="container">
-        <div class="section-heading">
+        <div class="section-heading reveal">
           <div>
-            <h2>Featured Projects</h2>
-            <p class="section-note">
-              Selected projects showing research, coding, modeling, data analysis, and scientific communication.
-            </p>
+            <p class="eyebrow">Featured research</p>
+            <h2>Climate-driven tiger salamander disease modeling</h2>
+          </div>
+          <p>
+            A spatial epidemiological modeling project connecting field sampling,
+            environmental drivers, seasonal host behavior, and reproducible Python workflows.
+          </p>
+        </div>
+
+        <article class="spotlight reveal">
+          <div class="spotlight-top">
+            <div class="spotlight-copy">
+              <h3>Modeling Ambystoma tigrinum virus across Arizona pond networks</h3>
+              <p>
+                I built a spatially explicit compartmental disease model in Python using
+                <strong>epymorph</strong> to simulate Ambystoma tigrinum virus (ATV)
+                transmission across connected tiger salamander pond networks. The model
+                represents within-pond transmission, host life stages, seasonal adult
+                migration, chronic carrier adults, and environmental forcing.
+              </p>
+              <p>
+                I also developed custom distance-based movement kernels and integrated
+                daily PRISM climate data to examine how landscape connectivity and
+                seasonal environmental conditions shape outbreak risk.
+              </p>
+
+              <p class="impact">
+                Scenario comparisons showed that severe outbreaks emerge when susceptible
+                larvae, carrier adults, and favorable temperatures overlap seasonally.
+              </p>
+
+              <div class="tag-row" aria-label="ATV project tools">
+                <span class="tag">Python</span>
+                <span class="tag">epymorph</span>
+                <span class="tag">Compartmental modeling</span>
+                <span class="tag">PRISM climate data</span>
+                <span class="tag">Spatial movement kernels</span>
+              </div>
+
+              <div class="spotlight-actions">
+                <a class="button primary" href="https://github.com/adk254/HURA_25-26" target="_blank" rel="noopener">View GitHub repo ↗</a>
+                <a class="button" href="assets/HURA_poster.pdf" target="_blank" rel="noopener">Research poster ↗</a>
+                <a class="button" href="assets/capstone_paper.pdf" target="_blank" rel="noopener">Culmination paper ↗</a>
+              </div>
+            </div>
+
+            <figure class="fieldwork-figure">
+              <img
+                src="assets/fieldwork_image.jpg"
+                alt="Andrew Kerfoot swabbing a tiger salamander during fieldwork in Arizona"
+              />
+              <figcaption>
+                Field sampling for ATV prevalence analysis and spatial disease-model development.
+              </figcaption>
+            </figure>
+          </div>
+
+          <figure class="model-figure">
+            <img
+              src="assets/atv_model_figure.png"
+              alt="Conceptual seasonal timeline for the ATV transmission model, showing adult movement, birth pulse, transmission season, maturation, temperature, and precipitation"
+              loading="lazy"
+            />
+            <figcaption>
+              Conceptual timeline for the climate-driven ATV transmission model.
+            </figcaption>
+          </figure>
+        </article>
+
+        <div class="section-heading reveal" style="margin-top: 4.3rem;">
+          <div>
+            <p class="eyebrow">Additional work</p>
+            <h2>Projects across data, biology, and forecasting</h2>
+          </div>
+          <p>
+            Selected work demonstrating applied programming, statistical reasoning,
+            reproducible analysis, and scientific communication.
+          </p>
+        </div>
+
+        <div class="projects-grid">
+          <article class="project-card reveal">
+            <img
+              class="forecast-image"
+              src="assets/flu_forecast_figure.png"
+              alt="Probabilistic influenza-like illness forecast visualization"
+              loading="lazy"
+            />
+            <div class="card-body">
+              <p class="eyebrow">Forecasting · R</p>
+              <h3>ILI Forecasting with STL + ETS</h3>
+              <p>
+                Built and compared six probabilistic influenza-like illness forecasting
+                models in R using CDC FluSight quantile targets and hubverse-compatible
+                outputs. The final model improved validation weighted interval score by
+                15% versus the untransformed STL+ETS baseline while achieving 92% coverage
+                for 90% prediction intervals.
+              </p>
+              <div class="tag-row">
+                <span class="tag">R</span>
+                <span class="tag">fpp3</span>
+                <span class="tag">hubverse</span>
+                <span class="tag">Quantile forecasts</span>
+              </div>
+              <div class="card-actions">
+                <a class="button primary" href="https://sjfox.github.io/ATSF2026-dashboard/forecast.html?as_of=2020-02-29&amp;interval=95%25&amp;target_var=ili+perc&amp;xaxis_range=2019-08-18&amp;xaxis_range=2020-03-29&amp;yaxis_range=-0.2221099840001844&amp;yaxis_range=11.257711185351003&amp;model=hist-avg&amp;model=adk-rwdriftbs&amp;model=adk-stletsbc&amp;model=delphi-epicast&amp;location=US+National" target="_blank" rel="noopener">Forecast dashboard ↗</a>
+                <a class="button" href="assets/forecast_paper.pdf" target="_blank" rel="noopener">Report PDF ↗</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="compact-card">
+              <p class="mini-kicker">Python · SQLite · Streamlit</p>
+              <h3>Immune Cell Analytics Dashboard</h3>
+              <p>
+                Built a reproducible dashboard for exploring clinical-style immune-cell
+                population data. The workflow loads raw cell-count data into a relational
+                database, calculates relative frequencies, compares treatment responders
+                and non-responders, applies Mann–Whitney U tests with FDR correction, and
+                presents results interactively.
+              </p>
+              <div class="tag-row">
+                <span class="tag">Python</span>
+                <span class="tag">SQLite</span>
+                <span class="tag">pandas</span>
+                <span class="tag">scipy</span>
+                <span class="tag">Plotly</span>
+                <span class="tag">Streamlit</span>
+              </div>
+              <div class="card-actions">
+                <a class="button primary" href="https://adk254-immune-cell-analysis-dashboard.streamlit.app/" target="_blank" rel="noopener">Live dashboard ↗</a>
+                <a class="button" href="https://github.com/adk254/Immune-Cell-Analytics-Dashboard" target="_blank" rel="noopener">GitHub repo ↗</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <img
+              src="assets/wildfire_image.jpg"
+              alt="Wildfire landscape used as a visual for the environmental regression analysis project"
+              loading="lazy"
+            />
+            <div class="card-body">
+              <p class="eyebrow">Environmental analysis · R</p>
+              <h3>Wildfire Regression Analysis</h3>
+              <p>
+                Analyzed relationships among temperature, precipitation, wildfire counts,
+                and fire size for 10 U.S. states using regression models, visualization,
+                and careful interpretation of observational environmental data.
+              </p>
+              <div class="tag-row">
+                <span class="tag">R</span>
+                <span class="tag">Regression</span>
+                <span class="tag">Visualization</span>
+                <span class="tag">Environmental data</span>
+              </div>
+              <div class="card-actions">
+                <a class="button primary" href="assets/wildfire_final_project.html" target="_blank" rel="noopener">View report ↗</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="compact-card">
+              <p class="mini-kicker">Research communication</p>
+              <h3>Posters, presentations, and technical writing</h3>
+              <p>
+                Communicated ecological modeling and environmental analysis through
+                research posters, technical reports, project documentation, and
+                presentations at undergraduate research showcases.
+              </p>
+              <div class="tag-row">
+                <span class="tag">Scientific writing</span>
+                <span class="tag">Posters</span>
+                <span class="tag">Presentations</span>
+                <span class="tag">Documentation</span>
+              </div>
+              <div class="card-actions">
+                <a class="button primary" href="#writing">Browse writing samples ↓</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="writing">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">Posters & writing</p>
+            <h2>Selected research materials</h2>
+          </div>
+          <p>
+            Supporting documents that show the progression from research question
+            to analysis, interpretation, and communication.
+          </p>
+        </div>
+
+        <div class="writing-grid">
+          <div class="resource-card reveal">
+            <h3>Research posters</h3>
+            <ul>
+              <li><a href="assets/preliminary_HURA_poster.pdf" target="_blank" rel="noopener">Preliminary HURA poster ↗</a></li>
+              <li><a href="assets/HURA_poster.pdf" target="_blank" rel="noopener">HURA / OURCA research poster ↗</a></li>
+            </ul>
+          </div>
+
+          <div class="resource-card reveal">
+            <h3>Technical reports</h3>
+            <ul>
+              <li><a href="assets/forecast_paper.pdf" target="_blank" rel="noopener">ILI forecasting report ↗</a></li>
+              <li><a href="assets/wildfire_final_project.html" target="_blank" rel="noopener">Environmental data analysis report ↗</a></li>
+              <li><a href="assets/capstone_paper.pdf" target="_blank" rel="noopener">HURA culmination paper ↗</a></li>
+            </ul>
+          </div>
+
+          <div class="resource-card reveal">
+            <h3>Research highlights</h3>
+            <ul>
+              <li>Spatial disease modeling in Python</li>
+              <li>Probabilistic forecasting in R</li>
+              <li>Climate-data integration and regression analysis</li>
+              <li>Interactive analytics dashboards</li>
+            </ul>
           </div>
         </div>
-
-        <div class="grid">
-          <!-- PROJECT 1 -->
-          <article class="card">
-            <h3>Tiger Salamander Disease Modeling</h3>
-            <p>
-              Modeled climate-driven disease dynamics in Arizona tiger salamanders using a spatial, multi-pond simulation framework.
-              The project integrates temperature, movement, host life stage, and infection dynamics.
-            </p>
-            <div class="tag-row">
-              <span class="tag">Python</span>
-              <span class="tag">epymorph</span>
-              <span class="tag">Disease ecology</span>
-              <span class="tag">Climate data</span>
-            </div>
-            <div class="link-row">
-              <a href="https://github.com/adk254/HURA_25-26" target="_blank" rel="noopener">GitHub</a>
-              <a href="assets/HURA_poster.pdf">Poster PDF</a>
-              <a href="assets/capstone_paper.pdf">Full Project Paper</a>
-            </div>
-          </article>
-
-          <!-- PROJECT 2 -->
-          <article class="card">
-            <h3>Immune Cell Analytics Dashboard</h3>
-            <p>
-              Built a reproducible Python, SQLite, and Streamlit dashboard for analyzing clinical-style immune cell population data.
-              The project loads raw cell-count data into a relational database, calculates immune-cell relative frequencies, compares
-              melanoma treatment responders and non-responders, applies Mann–Whitney U tests with FDR correction, and presents results
-              through an interactive dashboard.
-            </p>
-            <div class="tag-row">
-              <span class="tag">Python</span>
-              <span class="tag">SQLite</span>
-              <span class="tag">pandas</span>
-              <span class="tag">scipy</span>
-              <span class="tag">statsmodels</span>
-              <span class="tag">Plotly</span>
-              <span class="tag">Streamlit</span>
-            </div>
-            <div class="link-row">
-              <a href="https://github.com/adk254/Immune-Cell-Analytics-Dashboard" target="_blank" rel="noopener">GitHub</a>
-              <a href="https://adk254-immune-cell-analysis-dashboard.streamlit.app/" target="_blank" rel="noopener">Live Dashboard</a>
-            </div>
-          </article>
-
-          <!-- PROJECT 3 -->
-          <article class="card">
-            <h3>ILI Forecasting with STL + ETS</h3>
-            <p>
-              Built and evaluated probabilistic forecasts for influenza-like illness using time-series models,
-              quantile forecasts, validation periods, and weighted interval score comparisons.
-            </p>
-            <div class="tag-row">
-              <span class="tag">R</span>
-              <span class="tag">fpp3</span>
-              <span class="tag">Forecasting</span>
-              <span class="tag">hubverse</span>
-            </div>
-            <div class="link-row">
-              <a href="https://github.com/sjfox/ATSF2026" target="_blank" rel="noopener">GitHub</a>
-              <a href="https://sjfox.github.io/ATSF2026-dashboard/forecast.html?as_of=2020-02-29&interval=95%25&target_var=ili+perc&xaxis_range=2019-08-18&xaxis_range=2020-03-29&yaxis_range=-0.2221099840001844&yaxis_range=11.257711185351003&model=delphi-epicast&model=hist-avg&model=adk-rwdriftbs&model=adk-stletsbc&location=US+National" target="_blank" rel="noopener">Forecast Results</a>
-              <a href="assets/forecast_paper.pdf">Report PDF</a>
-            </div>
-          </article>
-
-          <!-- PROJECT 4 -->
-          <article class="card">
-            <h3>Wildfire Regression Analysis</h3>
-            <p>
-              Analyzed relationships between temperature, precipitation, wildfire counts, and fire size for 10 U.S. states using statistical modeling,
-              data visualization, and careful interpretation of observational environmental data.
-            </p>
-            <div class="tag-row">
-              <span class="tag">R</span>
-              <span class="tag">Regression</span>
-              <span class="tag">Data visualization</span>
-              <span class="tag">Environmental science</span>
-            </div>
-            <div class="link-row">
-              <a href="assets/wildfire_final_project.html">Report HTML</a>
-              <a href="https://github.com/adk254" target="_blank" rel="noopener">GitHub</a>
-            </div>
-          </article>
-        </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         POSTERS AND WRITING
-         Good place for PDFs that show communication skills.
-         Add files to /assets and update the href filenames.
-         ============================================================ -->
-    <section id="writing">
+    <section class="section alt" id="skills">
       <div class="container">
-        <h2>Posters & Writing</h2>
-        <p class="section-note">
-          Research posters, reports, and selected writing samples.
-        </p>
-
-        <div class="two-column" style="margin-top: 1rem;">
-          <article class="card">
-            <h3>Research Posters</h3>
-            <ul>
-              <li><a href="assets/preliminary_HURA_poster.pdf">Preliminary HURA Poster</a></li>
-              <li><a href="assets/HURA_poster.pdf">HURA / OURCA Research Poster</a></li>
-            </ul>
-          </article>
-
-          <article class="card">
-            <h3>Reports & Writing Samples</h3>
-            <ul>
-              <li><a href="assets/forecast_paper.pdf">ILI Forecasting Report</a></li>
-              <li><a href="assets/wildfire_final_project.html">Environmental Data Analysis Report</a></li>
-              <li><a href="assets/capstone_paper.pdf">HURA Culmination Paper</a></li>
-            </ul>
-          </article>
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">Technical toolkit</p>
+            <h2>Skills and methods</h2>
+          </div>
+          <p>
+            Tools I have used through research, coursework, and independent projects.
+          </p>
         </div>
-      </div>
-    </section>
 
-    <!-- ============================================================
-         SKILLS
-         Update these as your resume changes.
-         ============================================================ -->
-    <section id="skills">
-      <div class="container">
-        <h2>Skills</h2>
-        <p class="section-note">
-          Tools and methods I have used in coursework, research, and independent projects.
-        </p>
-
-        <div class="grid" style="margin-top: 1rem;">
-          <article class="card">
-            <h3>Programming & Data</h3>
+        <div class="skills-grid">
+          <div class="skill-card reveal">
+            <h3>Programming & data</h3>
             <ul>
               <li>Python, R, SQL</li>
               <li>pandas, NumPy, scipy, statsmodels, tidyverse</li>
-              <li>SQLite, Streamlit, Plotly</li>
-              <li>Git, GitHub, reproducible workflows</li>
+              <li>SQLite, Git, GitHub</li>
+              <li>Jupyter, RStudio, Quarto, R Markdown</li>
             </ul>
-          </article>
+          </div>
 
-          <article class="card">
-            <h3>Modeling & Analysis</h3>
+          <div class="skill-card reveal">
+            <h3>Modeling & analytics</h3>
             <ul>
               <li>Ecological simulation modeling</li>
-              <li>Disease dynamics and spatial modeling</li>
+              <li>Disease dynamics and spatial movement</li>
               <li>Time-series forecasting</li>
               <li>Regression and statistical analysis</li>
             </ul>
-          </article>
+          </div>
 
-          <article class="card">
-            <h3>Scientific Communication</h3>
+          <div class="skill-card reveal">
+            <h3>Research workflow</h3>
             <ul>
-              <li>Research posters and presentations</li>
-              <li>Technical reports</li>
-              <li>Interactive dashboards</li>
-              <li>Quarto, R Markdown, Jupyter</li>
+              <li>Reproducible computational workflows</li>
+              <li>Climate and geospatial datasets</li>
+              <li>Data visualization</li>
+              <li>Scientific writing and presentations</li>
             </ul>
-          </article>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ============================================================
-         CONTACT
-         ============================================================ -->
-    <section id="contact">
+    <section class="section" id="contact">
       <div class="container">
-        <div class="card">
-          <h2>Contact</h2>
-          <p>
-            I am interested in opportunities involving environmental data, ecological modeling,
-            research support, data analysis, bioinformatics-style analysis, and scientific computing.
-          </p>
+        <div class="contact-panel reveal">
+          <div>
+            <p class="eyebrow" style="color: rgba(255,255,255,0.72);">Contact</p>
+            <h2>Let’s connect.</h2>
+            <p>
+              I am interested in opportunities involving environmental data,
+              ecological modeling, research support, data analysis, applied biological
+              data, and scientific computing.
+            </p>
+          </div>
 
-          <p>
-            Email: <a href="mailto:andrewkerfoot1122@gmail.com">andrewkerfoot1122@gmail.com</a><br />
-            GitHub: <a href="https://github.com/adk254" target="_blank" rel="noopener">github.com/adk254</a><br />
-            LinkedIn: <a href="https://www.linkedin.com/in/andrewkerfoot/" target="_blank" rel="noopener">linkedin.com/in/andrewkerfoot</a>
-          </p>
+          <div class="hero-actions">
+            <a class="button" href="mailto:andrewkerfoot1122@gmail.com">Email me</a>
+            <a class="button" href="assets/resume.pdf" target="_blank" rel="noopener">Resume ↗</a>
+          </div>
         </div>
       </div>
     </section>
@@ -586,8 +1060,30 @@
 
   <footer>
     <div class="container">
-      <p>© 2026 Andrew Kerfoot. Built with GitHub Pages.</p>
+      © 2026 Andrew Kerfoot. Built with GitHub Pages.
     </div>
   </footer>
+
+  <script>
+    const revealItems = document.querySelectorAll(".reveal");
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12 }
+      );
+
+      revealItems.forEach((item) => observer.observe(item));
+    } else {
+      revealItems.forEach((item) => item.classList.add("visible"));
+    }
+  </script>
 </body>
 </html>
